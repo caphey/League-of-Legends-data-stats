@@ -1,0 +1,49 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f3f3f3;
+}
+
+#statusCheckerContainer {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  width: 300px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #1a78ae;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #166b8a;
+}
+
+.status-message {
+  margin-top: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.success {
+  color: #3a7a10;
+}
+
+.error {
+  color: #a94442;
+}
