@@ -33,6 +33,11 @@ function checkSummonerStatus() {
           "Summoner found with status code: " + data.status_code,
           false // false pour success car le status code est 200 (OK) donc le summoner existe bien dans la base de données de Riot Games
         );
+      if (data.match_ids) {
+        displayMatches(data.match_ids);
+      } else {
+        setStatusMessage("Matches not found", true);
+      }
       } else {
         // si le status code est différent de 200, le summoner n'existe pas dans la base de données de Riot Games (ou l'API est indisponible)
         setStatusMessage(
@@ -41,7 +46,37 @@ function checkSummonerStatus() {
         );
       }
     })
-    .catch(function (error) { // fonction qui sera exécutée si la promesse est rejetée (status code 404, 500, etc.) et qui retourne l'erreur
+    .catch(function (error) {
+      // fonction qui sera exécutée si la promesse est rejetée (status code 404, 500, etc.) et qui retourne l'erreur
       setStatusMessage("An error occurred: " + error, true);
     });
 }
+
+function displayMatches(matchIds) {
+  const matchesContainer = document.getElementById("matches");
+  matchesContainer.innerHTML = "";
+
+  matchIds.forEach((matchId) => {
+    // Ici, vous pourriez ensuite faire d'autres requêtes pour obtenir les détails de chaque match
+    const matchElement = document.createElement("div");
+    matchElement.textContent = `Match ID: ${matchId}`;
+    matchesContainer.appendChild(matchElement);
+  });
+}
+
+// function checkSummonerMatch() {
+//   fetch("http://localhost:5000/matches/" + encodeURIComponent(summonerName))
+//     .then(function (response) {
+//       return response.json();
+//     })
+//     .then(function (data) {
+//       if (data.match_ids) {
+//         displayMatches(data.match_ids);
+//       } else {
+//         setStatusMessage("Matches not found", true);
+//       }
+//     })
+//     .catch(function (error) {
+//       setStatusMessage("An error occurred: " + error, true);
+//     });
+// }
