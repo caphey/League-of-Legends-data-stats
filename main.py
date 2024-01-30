@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for
 import riot
 
 app = Flask(__name__)
+app.secret_key = 'dasitathon'
 
 
 @app.route('/', methods=['GET'])
@@ -22,12 +23,6 @@ def submit():
     session['top_champions'] = top_champions
     return redirect(url_for('result'))
 
-    return redirect(url_for('result'))
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
 
 @app.route('/result')
 def result():
@@ -35,3 +30,7 @@ def result():
     tag_line = session.get('tag_line', '')
     champions = session.get('top_champions', [])
     return render_template('result.html', game_name=game_name, tag_line=tag_line, champions=champions)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
