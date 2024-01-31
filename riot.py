@@ -7,8 +7,8 @@ api_key = "RGAPI-8afd6d0b-95ee-42b6-91dd-21a5aa5f501e"
 platform_api = ["BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2",
                 "NA1", "OC1", "TR1", "RU", "PH2", "SG2", "TH2", "TW2", "VN2"]
 region_api = ["americas", "asia", "europe", "sea"]
-startTime = "1705705200"  # 20 janvier 2024 00:00:00
-endTime = "1706569200"  # 30 janvier 2024 00:00:00
+startTime = "1706221916"  # 20 janvier 2024 00:00:00
+endTime = "1706741999"  # 30 janvier 2024 00:00:00
 # puuid = "P0CtqteOnbBAXVwPMTnlKo6a_L2JxZjdeFOflppDPGMUFZLUSl917s2xPfmR3fSa79WZJu9cDTxZJQ"
 
 
@@ -35,28 +35,43 @@ def get_info_match_by_puuid(puuid):
         region_api[2], puuid, startTime, endTime, api_key)
     response = requests.get(url)
     if response.status_code == 200:
-        match_data = response.json()
-        url_first_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}/timeline?api_key={}".format(region_api[2], match_data[0], api_key)
-        response = requests.get(url_first_match)
-        if response.status_code == 200:
-            match_info = response.json()
-            did_win = match_info["metadata"]["participants"][0]["win"]
-            if did_win:
-                did_win = "Victoire"
+        list_match = response.json()
+        match_info_list = []
+        all_matches_info = []
+        for match_id in list_match:
+            url_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(
+                region_api[2], match_id, api_key)
+            response = requests.get(url_match)
+            if response.status_code == 200:
+                match_info = response.json()
+                part_index = match_info["metadata"]["participants"].index(
+                    puuid)
+                champion_name = match_info["info"]["participants"][part_index]["championName"]
+                url_icon = "https://ddragon.leagueoflegends.com/cdn/14.2.1/img/champion/{}.png".format(
+                    champion_name)
+                did_win = match_info["info"]["participants"][part_index]["win"]
+                if did_win:
+                    did_win = "Victoire"
+                else:
+                    did_win = "Défaite"
+                kills = match_info["info"]["participants"][part_index]["kills"]
+                deaths = match_info["info"]["participants"][part_index]["deaths"]
+                assists = match_info["info"]["participants"][part_index]["assists"]
+                champ_level = match_info["info"]["participants"][part_index]["champLevel"]
+                gold_earned = match_info["info"]["participants"][part_index]["goldEarned"]
+                total_damage_dealt_to_champions = match_info["info"][
+                    "participants"][part_index]["totalDamageDealtToChampions"]
+                champions = match_info["info"]["participants"][part_index]["championName"]
+                if deaths == 0:
+                    kda = (kills + assists)
+                else:
+                    kda = (kills + assists) / deaths
+                match_info_list = [url_icon, did_win, kills, deaths, assists, champ_level,
+                                   gold_earned, total_damage_dealt_to_champions, champions, round(kda, 2)]
+                all_matches_info.append(match_info_list)
             else:
-                did_win = "Défaite"
-            kills = match_info["info"]["participants"][0]["kills"]
-            deaths = match_info["info"]["participants"][0]["deaths"]
-            assists = match_info["info"]["participants"][0]["assists"]
-            champ_level = match_info["info"]["participants"][0]["champLevel"]
-            gold_earned = match_info["info"]["participants"][0]["goldEarned"]
-            total_damage_dealt_to_champions = match_info["info"]["participants"][0]["totalDamageDealtToChampions"]
-            champions = match_info["info"]["participants"][0]["championName"]
-            id_champions = match_info["info"]["participants"][0]["championId"]
-            kda = (kills + assists) / deaths
-            return did_win, kills, deaths, assists, champ_level, gold_earned, total_damage_dealt_to_champions, champions, id_champions, kda
-        else:
-            return None
+                return None
+        return all_matches_info
     else:
         return None
 
@@ -85,15 +100,6 @@ def top_3_champions(puuid):
             return top_champions
         else:
             return None
-    else:
-        return None
-
-
-def get_icon_player():
-    url = "https://cdn.communitydragon.org/11.20.1/profile-icon/29"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
     else:
         return None
 
@@ -127,5 +133,6 @@ def get_icon_player(puuid):
             return None
     else:
         return None
+
 
 # print(get_info_match_by_puuid(get_puuid("Cig", "ImYou")))

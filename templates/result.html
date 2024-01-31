@@ -16,6 +16,8 @@
         <h1 class="summoner-name">{{ game_name }}</h1>
         <h2 class="summoner-name">{{ tag_line }}</h1>
       </div>
+
+
       <div class="champions-wrapper">
         {% for champion in champions %}
         <div class="champion">
@@ -29,17 +31,50 @@
         </div>
         {% endfor %}
       </div>
+
       <div class="performance-wrapper">
         <div class="flex-column">
-          <div class="performance-curve left">Historique des 10 derniers matchs</div>
-        <div class="performance-curve left">
-          <div class="profile"></div>
-          <div class="stats"></div>
+          <div class="performance-curve title">Historique des 10 derniers matchs</div>
+        {% for info in info_match %}
+        <div class="performance-curve">
+          <div class="card-match">
+          <div class="profile">
+            <div class="circle-image">
+              <img id="champion-image"
+                src="{{ info[0] }}"
+                alt="{{ info[0] }}"
+              />
+            </div>
+            <h3 class="champion-name">Nom du champion : {{ info[8] }} </h3>
+            <h3 class="champion-level">Level : {{ info[5] }}</h3>
+          </div>
+          <div class="line"></div>
+          <div class="stats">
+            <div class="stat">
+              <p>Tués : <span>{{ info[2] }}</span></p>
+              <p>Morts : <span>{{ info[3] }}</span></p>
+            </div>
+            <div class="stat">
+              <p>Assistances : <span>{{ info[4] }}</span> </p>
+              <p>Or gagnés : <span>{{ info[6] }}</span> </p>
+            </div>
+            <div class="stat">
+              <p>Total dégats : <span>{{ info[7] }}</span> </p>
+              <p>KDA : <span>{{ info[9] }}</span></p>
+            </div>
+          </div>
+          <div class="did-win" style="color: {{ '#D31638' if info[1] == 'Défaite' else '#96B23C' }}">OMG LA {{ info[1] }}</div>
         </div>
         </div>
-        
-        <div class="performance-curve right">Autres données</div>
+        {% endfor %}
+        </div>
+
+        <div class="flex-column">
+          <div class="performance-curve title">Autres données</div>
+          <div class="performance-curve">
       </div>
+    </div>
+    </div>
       <div class="advice-section">
         <h2>Conseils pour les prochaines games</h2>
         <p>

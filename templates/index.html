@@ -38,13 +38,13 @@
       </div>
     </form>
     <script>
-      document.addEventListener("mousemove", parallax);
-      function parallax(e) {
-        const background = document.querySelector(".parallax");
-        const speed = background.getAttribute("data-speed");
-        const x = (window.innerWidth - e.pageX * speed) / 100;
-        const y = (window.innerHeight - e.pageY * speed) / 100;
-        background.style.backgroundPosition = x + "px " + y + "px";
+      document.addEventListener("mousemove", parallax); // Ecouteur d'événement sur la souris
+      function parallax(e) { // Fonction qui permet de faire bouger le background en fonction de la position de la souris
+        const background = document.querySelector(".parallax"); // On récupère le background (ici la div avec la classe parallax)
+        const speed = background.getAttribute("data-speed"); // On récupère la vitesse du background (ici 3)
+        const x = (window.innerWidth - e.pageX * speed) / 100; // On récupère la position de la souris sur l'axe X et on la multiplie par la vitesse du background
+        const y = (window.innerHeight - e.pageY * speed) / 100; // On récupère la position de la souris sur l'axe Y et on la multiplie par la vitesse du background
+        background.style.backgroundPosition = x + "px " + y + "px"; // On applique les valeurs de x et y à la propriété backgroundPosition
       }
     </script>
   </body>

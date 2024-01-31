@@ -19,12 +19,14 @@ def submit():
     top_champions = riot.top_3_champions(puuid)
     icon = riot.get_icon_player(puuid)
     level = riot.get_level_player(puuid)
+    info_match = riot.get_info_match_by_puuid(puuid)
 
     session['game_name'] = game_name
     session['tag_line'] = tag_line
     session['top_champions'] = top_champions
     session['icon'] = icon
     session['level'] = level
+    session['info_match'] = info_match
     return redirect(url_for('result'))
 
 
@@ -35,7 +37,8 @@ def result():
     champions = session.get('top_champions', [])
     icon = session.get('icon', '')
     level = session.get('level', '')
-    return render_template('result.html', game_name=game_name, tag_line=tag_line, champions=champions, icon=icon, level=level)
+    info_match = session.get('info_match', {})
+    return render_template('result.html', game_name=game_name, tag_line=tag_line, champions=champions, icon=icon, level=level, info_match=info_match)
 
 
 if __name__ == '__main__':

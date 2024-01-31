@@ -74,12 +74,20 @@ body, html {
     box-sizing: border-box; /* Include padding and border in width */
 }
 
-.performance-curve.left {
-    margin-right: 5px;
+.performance-curve.title {
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: #264653;
 }
 
-.performance-curve.right {
-    margin-left: 5px;
+.did-win {
+    color: #3fafdb;
+    font-weight: bold;
+        text-transform: uppercase;
+}
+
+.did-win:contains("Défaite") {
+    color: #b33939; /* Couleur pour Défaite */
 }
 
 .advice-section {
@@ -103,6 +111,49 @@ body, html {
     object-fit: cover;
     border-radius: 50%;
 }
+
+
+
+/* Card match */
+
+.card-match {
+    padding: 10px 20px;
+}
+
+.profile {
+    display: flex;
+    justify-content: space-between;
+}
+
+.line{ 
+    height: 1px;
+    background: #5f5f5f;
+    margin: 10px 0 ;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stats .stat {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.stats .stat p {
+    font-size: 18px;
+    font-weight: bold;
+    color: #3fafdb;
+}
+
+.stats .stat span {
+    font-size: 18px;
+    font-weight: normal;
+    color: white;
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {
