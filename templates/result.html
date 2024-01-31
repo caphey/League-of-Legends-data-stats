@@ -1,19 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Interface de Profil de Joueur</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='result.css') }}"
+    />
   </head>
   <body>
-    <h1>Résultat du gros noob apanyan</h1>
-    {% if game_name %}
-    <p>Texte entré : {{ game_name }}</p>
-    {% endif %} {% if tag_line %}
-    <p>Nom du fichier : {{ tag_line }}</p>
-    {% endif %} 
-    {% for champion in champions %}
-    <p>Champion : {{ champion }}</p>
-    {% endfor %}
+    <div class="content-wrapper">
+      <div class="summoner-info-wrapper">
+        <div class="avatar"> <img id="avatar_image" src="https://ddragon.leagueoflegends.com/cdn/14.2.1/img/profileicon/{{icon}}" alt=""></div>
+        <h1 class="summoner-name">{{ game_name }}</h1>
+        <h2 class="summoner-name">{{ tag_line }}</h1>
+      </div>
+      <div class="champions-wrapper">
+        {% for champion in champions %}
+        <div class="champion">
+          <div class="circle-image">
+            <img id="champion-image"
+              src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{{ champion }}_0.jpg"
+              alt="{{ champion }}"
+            />
+          </div>
+          <div class="champion-name">{{ champion }} (WR, CS, KDA)</div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="performance-wrapper">
+        <div class="flex-column">
+          <div class="performance-curve left">Historique des 10 derniers matchs</div>
+        <div class="performance-curve left">
+          <div class="profile"></div>
+          <div class="stats"></div>
+        </div>
+        </div>
+        
+        <div class="performance-curve right">Autres données</div>
+      </div>
+      <div class="advice-section">
+        <h2>Conseils pour les prochaines games</h2>
+        <p>
+          Qu'est-ce que tu dois faire pour prendre des LP sur tes prochaines
+          games?
+        </p>
+      </div>
+    </div>
   </body>
 </html>

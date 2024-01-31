@@ -15,9 +15,9 @@ html {
 .parallax {
   position: absolute;
   top: -10%; /* Ajusté pour permettre un mouvement complet de l'image */
-  left: -10%; /* Ajusté pour permettre un mouvement complet de l'image */
-  width: 120%; /* Ajusté pour permettre un mouvement complet de l'image */
-  height: 120%; /* Ajusté pour permettre un mouvement complet de l'image */
+  left: -15%; /* Ajusté pour permettre un mouvement complet de l'image */
+  width: 130%; /* Ajusté pour permettre un mouvement complet de l'image */
+  height: 130%; /* Ajusté pour permettre un mouvement complet de l'image */
   background: url(/static/img/img2.png) center center/cover no-repeat;
   z-index: -1;
   background-position: center;

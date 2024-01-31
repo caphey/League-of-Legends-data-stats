@@ -35,7 +35,28 @@ def get_info_match_by_puuid(puuid):
         region_api[2], puuid, startTime, endTime, api_key)
     response = requests.get(url)
     if response.status_code == 200:
-        return response.json()
+        match_data = response.json()
+        url_first_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}/timeline?api_key={}".format(region_api[2], match_data[0], api_key)
+        response = requests.get(url_first_match)
+        if response.status_code == 200:
+            match_info = response.json()
+            did_win = match_info["metadata"]["participants"][0]["win"]
+            if did_win:
+                did_win = "Victoire"
+            else:
+                did_win = "Défaite"
+            kills = match_info["info"]["participants"][0]["kills"]
+            deaths = match_info["info"]["participants"][0]["deaths"]
+            assists = match_info["info"]["participants"][0]["assists"]
+            champ_level = match_info["info"]["participants"][0]["champLevel"]
+            gold_earned = match_info["info"]["participants"][0]["goldEarned"]
+            total_damage_dealt_to_champions = match_info["info"]["participants"][0]["totalDamageDealtToChampions"]
+            champions = match_info["info"]["participants"][0]["championName"]
+            id_champions = match_info["info"]["participants"][0]["championId"]
+            kda = (kills + assists) / deaths
+            return did_win, kills, deaths, assists, champ_level, gold_earned, total_damage_dealt_to_champions, champions, id_champions, kda
+        else:
+            return None
     else:
         return None
 
@@ -48,7 +69,7 @@ def top_3_champions(puuid):
     response = requests.get(champions_player_url)
     if response.status_code == 200:
         champions_player = response.json()
-        data_champions_url = "https://ddragon.leagueoflegends.com/cdn/12.6.1/data/en_US/champion.json"
+        data_champions_url = "https://ddragon.leagueoflegends.com/cdn/14.2.1/data/en_US/champion.json"
         response = requests.get(data_champions_url)
         if response.status_code == 200:
             data_champions = response.json()
@@ -66,3 +87,45 @@ def top_3_champions(puuid):
             return None
     else:
         return None
+
+
+def get_icon_player():
+    url = "https://cdn.communitydragon.org/11.20.1/profile-icon/29"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+
+def get_level_player(puuid):
+    url = "https://{}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{}?api_key={}".format(
+        platform_api[2], puuid, api_key)
+    response = requests.get(url)
+    if response.status_code == 200:
+        summoner_level = response.json()["summonerLevel"]
+        return summoner_level
+    else:
+        return None
+
+
+def get_icon_player(puuid):
+    url = "https://{}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{}?api_key={}".format(
+        platform_api[2], puuid, api_key)
+    response = requests.get(url)
+    if response.status_code == 200:
+        summoner_icon_id = response.json()["profileIconId"]
+        url_data_icon = "https://ddragon.leagueoflegends.com/cdn/14.2.1/data/en_US/profileicon.json"
+        response = requests.get(url_data_icon)
+        if response.status_code == 200:
+            data_icon = response.json()
+            for key, value in data_icon["data"].items():
+                if summoner_icon_id == int(key):
+                    summoner_icon = value["image"]["full"]
+                    return summoner_icon
+        else:
+            return None
+    else:
+        return None
+
+# print(get_info_match_by_puuid(get_puuid("Cig", "ImYou")))
