@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 
 # API key provenant de la plateforme Riot Games
-api_key = "RGAPI-6439fe6f-9e4c-4887-aac5-5c1aff6b8f6b"
+api_key = "RGAPI-8afd6d0b-95ee-42b6-91dd-21a5aa5f501e"
 
 platform_api = ["BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2",
                 "NA1", "OC1", "TR1", "RU", "PH2", "SG2", "TH2", "TW2", "VN2"]
@@ -23,7 +23,7 @@ def get_puuid(gameName, tagLine):
         player_info = response.json()
         puuid = player_info["puuid"]
         return puuid
-        
+
     else:
         return None
 

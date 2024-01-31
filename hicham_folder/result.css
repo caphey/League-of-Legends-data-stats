@@ -1,0 +1,82 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+.content-wrapper {
+    text-align: center;
+    padding: 20px;
+}
+
+.summoner-info-wrapper {
+    margin-bottom: 20px;
+}
+
+.avatar {
+    background-color: #555;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.summoner-name {
+    margin: 0;
+}
+
+.champions-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.champion {
+    background-color: #222;
+    margin: 0 10px;
+    padding: 10px;
+    border-radius: 5px;
+    flex-basis: calc(33.333% - 20px); /* Subtract margins */
+    box-sizing: border-box; /* Include padding and border in width */
+}
+
+.performance-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.performance-curve {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    flex-basis: calc(50% - 10px); /* Subtract margins */
+    box-sizing: border-box; /* Include padding and border in width */
+}
+
+.performance-curve.left {
+    margin-right: 5px;
+}
+
+.performance-curve.right {
+    margin-left: 5px;
+}
+
+.advice-section {
+    background-color: #264653;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .champions-wrapper, .performance-wrapper {
+        flex-direction: column;
+    }
+    
+    .champion, .performance-curve {
+        margin: 10px 0;}
+     } /* Add margin

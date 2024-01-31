@@ -4,16 +4,48 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Formulaire</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='index.css') }}"
+    />
   </head>
   <body>
+    <div id="contenurImg">
+      <div class="parallax" data-speed="3"></div>
+    </div>
+
     <form
       action="{{ url_for('submit') }}"
       method="post"
       enctype="multipart/form-data"
     >
-      <input type="text" name="game_name" placeholder="Game Name" />
-      <input type="text" name="tag_line" placeholder="Tag Line" />
-      <input type="submit" value="Submit" />
+      <div id="inputDiv">
+        <input
+          type="text"
+          id="summonerNameInput"
+          name="game_name"
+          placeholder="Game Name"
+        />
+        <input
+          type="text"
+          id="summonerNameInput"
+          name="tag_line"
+          placeholder="Tag Line"
+        />
+      </div>
+      <div id="btnSubmit">
+        <input type="submit" id="searchButton" value="Submit" />
+      </div>
     </form>
+    <script>
+      document.addEventListener("mousemove", parallax);
+      function parallax(e) {
+        const background = document.querySelector(".parallax");
+        const speed = background.getAttribute("data-speed");
+        const x = (window.innerWidth - e.pageX * speed) / 100;
+        const y = (window.innerHeight - e.pageY * speed) / 100;
+        background.style.backgroundPosition = x + "px " + y + "px";
+      }
+    </script>
   </body>
 </html>

@@ -1,0 +1,105 @@
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.parallax {
+  position: absolute;
+  top: -10%; /* Ajusté pour permettre un mouvement complet de l'image */
+  left: -10%; /* Ajusté pour permettre un mouvement complet de l'image */
+  width: 120%; /* Ajusté pour permettre un mouvement complet de l'image */
+  height: 120%; /* Ajusté pour permettre un mouvement complet de l'image */
+  background: url(/static/img/img2.png) center center/cover no-repeat;
+  z-index: -1;
+  background-position: center;
+}
+
+#conteneurImg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Ajouté pour cacher les parties de l'image qui dépassent du conteneur */
+}
+
+#inputDiv {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#btnSubmit {
+  width: 100%;
+}
+
+.search-wrapper {
+  display: flex;
+  flex-direction: column; /* Utilise column pour organiser le contenu du formulaire */
+  align-items: center; /* Centre verticalement */
+  gap: 10px; /* L'espace entre les éléments */
+  width: 100%;
+  max-width: 1000px; /* Ajuste cela pour définir la largeur maximale de ton formulaire de recherche */
+}
+
+.search-wrapper form {
+  width: 100%; /* Assure que le formulaire remplit le conteneur */
+  display: flex;
+  align-items: stretch; /* Cela va étirer tous les enfants pour qu'ils aient la même hauteur */
+  gap: 10px; /* L'espace entre les éléments */
+}
+
+#summonerNameInput,
+#regionSelect,
+#searchButton {
+  padding: 10px;
+  margin: 0;
+  border: 2px solid #555;
+  border-radius: 5px;
+  background-color: #333;
+  color: white;
+  font-size: 1rem;
+  box-sizing: border-box; /* S'assurer que la largeur inclut le padding et la bordure */
+}
+
+#summonerNameInput {
+  flex-grow: 2; /* Permet au champ de saisie de prendre plus d'espace */
+}
+
+#regionSelect {
+  flex-grow: 1;
+}
+
+#searchButton {
+  flex-grow: 1;
+  white-space: nowrap; /* Empêche le texte du bouton de passer à la ligne suivante */
+  cursor: pointer;
+  background-color: #555; /* Différencier la couleur du bouton */
+  height: 50px; /* Assure que le bouton est de la même hauteur que les inputs */
+  width: 100%; /* Ajouté pour faire en sorte que le bouton prenne toute la largeur de son conteneur parent */
+}
+
+/* Adjustements pour les petits écrans */
+@media (max-width: 768px) {
+  .search-wrapper form {
+    flex-direction: column;
+    gap: 20px; /* Ajoute un espace de 20px entre les éléments sur les petits écrans */
+  }
+
+  #summonerNameInput,
+  #regionSelect,
+  #searchButton {
+    width: 100%; /* Fait en sorte que les éléments remplissent la largeur sur les petits écrans */
+    flex-grow: 0; /* Annule le flex-grow pour la direction column */
+  }
+}

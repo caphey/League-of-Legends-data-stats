@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche Nom d'Invocateur</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='result.css') }}">
+</head>
+    <title>Résultats</title>
+</head>
+<body>
+    <h1>Résultats</h1>
+    {% if text %}
+        <p>Texte entré : {{ text }}</p>
+    {% endif %}
+    {% if filename %}
+        <p>Nom du fichier : {{ filename }}</p>
+    {% endif %}
+    {% if pdf_text %}
+        <p>Contenu du PDF : {{ pdf_text }}</p>
+    {% endif %}
+</body>
+</html>
