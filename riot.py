@@ -1,15 +1,29 @@
 import requests
-from datetime import datetime
+import matplotlib.pyplot as plt
+import time
+from datetime import datetime, timedelta
 
 # API key provenant de la plateforme Riot Games
-api_key = "RGAPI-8afd6d0b-95ee-42b6-91dd-21a5aa5f501e"
+api_key = "RGAPI-08f13e20-7c65-4b94-9af7-cb3c7fcff42b"
 
 platform_api = ["BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2",
                 "NA1", "OC1", "TR1", "RU", "PH2", "SG2", "TH2", "TW2", "VN2"]
 region_api = ["americas", "asia", "europe", "sea"]
-startTime = "1706221916"  # 20 janvier 2024 00:00:00
-endTime = "1706741999"  # 30 janvier 2024 00:00:00
-# puuid = "P0CtqteOnbBAXVwPMTnlKo6a_L2JxZjdeFOflppDPGMUFZLUSl917s2xPfmR3fSa79WZJu9cDTxZJQ"
+# startTime = "1706221916"
+# endTime = "1706741999"
+
+# date_created = "01/01/2009"
+# date_format = "%d/%m/%Y"
+# date_created_timestamp = round(datetime.strptime(
+#     date_created, date_format).timestamp())
+
+startTime = "1623974400"
+
+today_timestamp = round(time.time())
+
+today = datetime.now()
+ten_days_ago = today - timedelta(days=10)
+ten_days_ago_timestamp = round(ten_days_ago.timestamp())
 
 
 # Fonction qui permet de récupérer les informations du joueur
@@ -32,7 +46,7 @@ def get_puuid(gameName, tagLine):
 def get_info_match_by_puuid(puuid):
     # puuid : identifiant unique du joueur
     url = "https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?startTime={}&endTime={}&api_key={}".format(
-        region_api[2], puuid, startTime, endTime, api_key)
+        region_api[2], puuid, ten_days_ago_timestamp, today_timestamp, api_key)
     response = requests.get(url)
     if response.status_code == 200:
         list_match = response.json()
@@ -46,6 +60,7 @@ def get_info_match_by_puuid(puuid):
                 match_info = response.json()
                 part_index = match_info["metadata"]["participants"].index(
                     puuid)
+
                 champion_name = match_info["info"]["participants"][part_index]["championName"]
                 url_icon = "https://ddragon.leagueoflegends.com/cdn/14.2.1/img/champion/{}.png".format(
                     champion_name)
@@ -54,6 +69,8 @@ def get_info_match_by_puuid(puuid):
                     did_win = "Victoire"
                 else:
                     did_win = "Défaite"
+                date_match = datetime.fromtimestamp(
+                    match_info["info"]["gameCreation"] / 1000).strftime("%d/%m/%Y")
                 kills = match_info["info"]["participants"][part_index]["kills"]
                 deaths = match_info["info"]["participants"][part_index]["deaths"]
                 assists = match_info["info"]["participants"][part_index]["assists"]
@@ -67,7 +84,7 @@ def get_info_match_by_puuid(puuid):
                 else:
                     kda = (kills + assists) / deaths
                 match_info_list = [url_icon, did_win, kills, deaths, assists, champ_level,
-                                   gold_earned, total_damage_dealt_to_champions, champions, round(kda, 2)]
+                                   gold_earned, total_damage_dealt_to_champions, champions, round(kda, 2), date_match]
                 all_matches_info.append(match_info_list)
             else:
                 return None
@@ -135,4 +152,86 @@ def get_icon_player(puuid):
         return None
 
 
-# print(get_info_match_by_puuid(get_puuid("Cig", "ImYou")))
+def get_icon_champion(champion_name):
+    url = "https://ddragon.leagueoflegends.com/cdn/14.2.1/img/champion/{}.png".format(
+        champion_name)
+    return url
+
+
+def get_win_loss_percentage(puuid):
+    champions_player_url = "https://{}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/{}/top?count=5&api_key={}".format(
+        platform_api[2], puuid, api_key)
+    response = requests.get(champions_player_url)
+    if response.status_code == 200:
+        champions_player = response.json()
+        data_champions_url = "https://ddragon.leagueoflegends.com/cdn/14.2.1/data/en_US/champion.json"
+        response = requests.get(data_champions_url)
+        if response.status_code == 200:
+            data_champions = response.json()
+            top_champions = []
+            win_loss_percentage = {}
+            # On parcourt la liste des champions du joueur pour trouver le nom du champion correspondant à l'id
+            for i in range(len(champions_player)):
+                # On parcourt la liste de tous les champions pour trouver le nom du champion correspondant à l'id
+                for key, value in data_champions["data"].items():
+                    # Si l'id du champion du joueur correspond à l'id du champion de la liste de tous les champions
+                    if champions_player[i]["championId"] == int(value["key"]):
+                        # On ajoute le nom du champion à la liste des champions les plus joués
+                        top_champions.append(value["name"])
+                        win_loss_percentage[value["name"]] = {
+                            "wins": 0, "losses": 0}
+            # On peut seulement récupérer les données des champions concernant les 20 derniers matchs car l'API permet seulement 100 requêtes toutes les 2 minutes
+            matchs_url = "https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?startTime={}&endTime={}&api_key={}".format(
+                region_api[2], puuid, startTime, today_timestamp, api_key)
+            response = requests.get(matchs_url)
+            if response.status_code == 200:
+                list_match = response.json()
+                for match_id in list_match:
+                    url_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(
+                        region_api[2], match_id, api_key)
+                    response = requests.get(url_match)
+                    if response.status_code == 200:
+                        match_info = response.json()
+                        part_index = match_info["metadata"]["participants"].index(
+                            puuid)
+                        champion_name = match_info["info"]["participants"][part_index]["championName"]
+                        if champion_name in top_champions:
+                            if match_info["info"]["participants"][part_index]["win"]:
+                                win_loss_percentage[champion_name]["wins"] += 1
+                            else:
+                                win_loss_percentage[champion_name]["losses"] += 1
+            else:
+                return None
+            return win_loss_percentage
+        else:
+            return None
+    else:
+        return None
+
+
+def plot_win_loss_percentage(win_loss_percentage):
+    champions = []
+    wins = []
+    losses = []
+
+    for champion, stats in win_loss_percentage.items():
+        if stats["wins"] != 0 or stats["losses"] != 0:
+            champions.append(champion)
+            wins.append(stats["wins"])
+            losses.append(stats["losses"])
+
+    if champions:
+        fig, ax = plt.subplots()
+
+        ax.pie(wins, losses, labels=champions, autopct='%1.1f%%', startangle=90)
+        # Equal aspect ratio ensures that pie is drawn as a circle.
+        ax.axis('equal')
+
+        ax.set_title('Win-Loss Percentage by Champion')
+
+        plt.show()
+
+
+print(plot_win_loss_percentage(get_win_loss_percentage(get_puuid("Cig", "ImYou"))))
+
+# print(get_win_loss_percentage(get_puuid("27o", "euw27")))

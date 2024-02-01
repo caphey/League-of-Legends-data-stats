@@ -27,7 +27,7 @@
               alt="{{ champion }}"
             />
           </div>
-          <div class="champion-name">{{ champion }} (WR, CS, KDA)</div>
+          <div class="champion-name">{{ champion }}</div>
         </div>
         {% endfor %}
       </div>
@@ -45,14 +45,15 @@
                 alt="{{ info[0] }}"
               />
             </div>
-            <h3 class="champion-name">Nom du champion : {{ info[8] }} </h3>
-            <h3 class="champion-level">Level : {{ info[5] }}</h3>
+            <h3 class="champion-name">{{ info[8] }} </h3>
+            <h3 class="date-match"> {{ info[10] }}</h3>
           </div>
           <div class="line"></div>
           <div class="stats">
             <div class="stat">
               <p>Tués : <span>{{ info[2] }}</span></p>
               <p>Morts : <span>{{ info[3] }}</span></p>
+              <p>Level : <span>{{ info[5] }}</span></p>
             </div>
             <div class="stat">
               <p>Assistances : <span>{{ info[4] }}</span> </p>
@@ -63,7 +64,7 @@
               <p>KDA : <span>{{ info[9] }}</span></p>
             </div>
           </div>
-          <div class="did-win" style="color: {{ '#D31638' if info[1] == 'Défaite' else '#96B23C' }}">OMG LA {{ info[1] }}</div>
+            <div class="did-win {% if info[1] == 'Défaite' %}defaite{% else %}victoire{% endif %}">OMG LA {{ info[1] }}</div>
         </div>
         </div>
         {% endfor %}

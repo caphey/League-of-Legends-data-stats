@@ -81,13 +81,16 @@ body, html {
 }
 
 .did-win {
-    color: #3fafdb;
     font-weight: bold;
-        text-transform: uppercase;
+    text-transform: uppercase;
 }
 
-.did-win:contains("Défaite") {
-    color: #b33939; /* Couleur pour Défaite */
+.did-win.defaite {
+    color: #D31638;
+}
+
+.did-win.victoire {
+    color: #7ab946;
 }
 
 .advice-section {
