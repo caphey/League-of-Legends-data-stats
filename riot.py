@@ -4,7 +4,7 @@ import time
 from datetime import datetime, timedelta
 
 # API key provenant de la plateforme Riot Games
-api_key = "RGAPI-08f13e20-7c65-4b94-9af7-cb3c7fcff42b"
+api_key = "RGAPI-d62e5423-5dae-40b7-a432-ae4cb17492dd"
 
 platform_api = ["BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2",
                 "NA1", "OC1", "TR1", "RU", "PH2", "SG2", "TH2", "TW2", "VN2"]
@@ -72,6 +72,7 @@ def get_info_match_by_puuid(puuid):
                 date_match = datetime.fromtimestamp(
                     match_info["info"]["gameCreation"] / 1000).strftime("%d/%m/%Y")
                 kills = match_info["info"]["participants"][part_index]["kills"]
+                type_match = match_info["info"]["gameMode"]
                 deaths = match_info["info"]["participants"][part_index]["deaths"]
                 assists = match_info["info"]["participants"][part_index]["assists"]
                 champ_level = match_info["info"]["participants"][part_index]["champLevel"]
@@ -84,7 +85,7 @@ def get_info_match_by_puuid(puuid):
                 else:
                     kda = (kills + assists) / deaths
                 match_info_list = [url_icon, did_win, kills, deaths, assists, champ_level,
-                                   gold_earned, total_damage_dealt_to_champions, champions, round(kda, 2), date_match]
+                                   gold_earned, total_damage_dealt_to_champions, champions, round(kda, 2), date_match, type_match]
                 all_matches_info.append(match_info_list)
             else:
                 return None
@@ -184,29 +185,20 @@ def get_win_loss_percentage(puuid):
         return None
 
 
-# def plot_win_loss_percentage(win_loss_percentage):
-    champions = []
-    wins = []
-    losses = []
-
-    for champion, stats in win_loss_percentage.items():
-        if stats["wins"] != 0 or stats["losses"] != 0:
-            champions.append(champion)
-            wins.append(stats["wins"])
-            losses.append(stats["losses"])
-
-    if champions:
-        fig, ax = plt.subplots()
-
-        ax.pie(wins, losses, labels=champions,
-               autopct='%1.1f%%', startangle=90)
-        # Equal aspect ratio ensures that pie is drawn as a circle.
-        ax.axis('equal')
-
-        ax.set_title('Win-Loss Percentage by Champion')
-
-        plt.show()
-
+# def plot_win_loss_percentage(win_loss):
+#     labels = 'Victoires', 'Défaites'
+#     # sizes sert à définir la taille des parts du camembert
+#     sizes = [win_loss["wins"], win_loss["losses"]]
+#     colors = ['#264653', 'white']
+#     # explode sert à séparer les parts du camembert pour mettre en avant une part du camembert
+#     explode = (0.1, 0)
+#     plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+#             # startangle sert à définir l'angle de départ du camembert, autopct sert à afficher le pourcentage
+#             autopct='%1.1f%%', shadow=True, startangle=140)
+#     # equal permet d'avoir un camembert parfaitement circulaire
+#     plt.axis('equal')
+#     plt.savefig('static/img/graph_win_loss.png', transparent=True)
+#     return 'static/img/graph_win_loss.png'
 
 # print(plot_win_loss_percentage(get_win_loss_percentage(get_puuid("Cig", "ImYou"))))
-print(get_win_loss_percentage(get_puuid("27o", "euw27")))
+# print(get_win_loss_percentage(get_puuid("Cig", "ImYou")))

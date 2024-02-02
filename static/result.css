@@ -1,177 +1,180 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #141414;
-    color: white;
-    font-family: 'Arial', sans-serif;
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #141414;
+  color: white;
+  font-family: "Arial", sans-serif;
 }
 
 .content-wrapper {
-    text-align: center;
-    padding: 20px;
+  text-align: center;
+  padding: 20px;
 }
 
 .summoner-info-wrapper {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-.player{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
+.player {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .avatar {
-    background-color: transparent;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    display: inline-block;
-    margin-bottom: 10px;
+  background-color: transparent;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 #avatar_image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .summoner-name {
-    margin: 0;
+  margin: 0;
 }
 
 .champions-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .champion {
-    background-color: #222;
-    margin: 0 10px;
-    padding: 10px;
-    border-radius: 5px;
-    flex-basis: calc(33.333% - 20px); /* Subtract margins */
-    box-sizing: border-box; /* Include padding and border in width */
+  background-color: #222;
+  margin: 0 10px;
+  padding: 10px;
+  border-radius: 5px;
+  flex-basis: calc(33.333% - 20px); /* Subtract margins */
+  box-sizing: border-box; /* Include padding and border in width */
 }
 
 .performance-wrapper {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .flex-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex-basis: calc(50% - 10px); /* Subtract margins */
-    box-sizing: border-box; /* Include padding and border in width */
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-basis: calc(50% - 10px); /* Subtract margins */
+  box-sizing: border-box; /* Include padding and border in width */
+  gap: 15px;
 }
 
 .performance-curve {
-    background-color: #333;
-    padding: 15px;
-    border-radius: 5px;
-    flex-basis: calc(50% - 10px); /* Subtract margins */
-    box-sizing: border-box; /* Include padding and border in width */
+  background-color: #333;
+  padding: 15px;
+  border-radius: 5px;
+  flex-basis: calc(50% - 10px); /* Subtract margins */
+  box-sizing: border-box; /* Include padding and border in width */
+  max-height: 35rem;
 }
 
 .performance-curve.title {
-    text-transform: uppercase;
-    font-weight: bold;
-    background-color: #264653;
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: #264653;
+  max-height: 3rem;
 }
 
 .did-win {
-    font-weight: bold;
-    text-transform: uppercase;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .did-win.defaite {
-    color: #D31638;
+  color: #d31638;
 }
 
 .did-win.victoire {
-    color: #7ab946;
+  color: #7ab946;
 }
 
 .advice-section {
-    background-color: #264653;
-    padding: 20px;
-    border-radius: 5px;
+  background-color: #264653;
+  padding: 20px;
+  border-radius: 5px;
 }
 
 .circle-image {
-    background-color: #555;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    display: inline-block;
-    margin-bottom: 10px;
+  background-color: #555;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 #champion-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
-
-
 
 /* Card match */
 
 .card-match {
-    padding: 10px 20px;
+  padding: 10px 20px;
 }
 
 .profile {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
-.line{ 
-    height: 1px;
-    background: #5f5f5f;
-    margin: 10px 0 ;
+.line {
+  height: 1px;
+  background: #5f5f5f;
+  margin: 10px 0;
 }
 
 .stats {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .stats .stat {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
 .stats .stat p {
-    font-size: 18px;
-    font-weight: bold;
-    color: #3fafdb;
+  font-size: 18px;
+  font-weight: bold;
+  color: #3fafdb;
 }
 
 .stats .stat span {
-    font-size: 18px;
-    font-weight: normal;
-    color: white;
+  font-size: 18px;
+  font-weight: normal;
+  color: white;
 }
-
 
 /* Responsive */
 @media (max-width: 768px) {
-    .champions-wrapper, .performance-wrapper {
-        flex-direction: column;
-    }
-    
-    .champion, .performance-curve {
-        margin: 10px 0;}
-     } /* Add margin
+  .champions-wrapper,
+  .performance-wrapper {
+    flex-direction: column;
+  }
 
+  .champion,
+  .performance-curve {
+    margin: 10px 0;
+  }
+}
+
+/* Graph */

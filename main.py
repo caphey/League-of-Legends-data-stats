@@ -20,6 +20,7 @@ def submit():
     icon = riot.get_icon_player(puuid)
     level = riot.get_level_player(puuid)
     info_match = riot.get_info_match_by_puuid(puuid)
+    win_loss_percentage = riot.get_win_loss_percentage(puuid)
 
     session['game_name'] = game_name
     session['tag_line'] = tag_line
@@ -27,6 +28,7 @@ def submit():
     session['icon'] = icon
     session['level'] = level
     session['info_match'] = info_match
+    session['win_loss_percentage'] = win_loss_percentage
     return redirect(url_for('result'))
 
 
@@ -38,7 +40,8 @@ def result():
     icon = session.get('icon', '')
     level = session.get('level', '')
     info_match = session.get('info_match', {})
-    return render_template('result.html', game_name=game_name, tag_line=tag_line, champions=champions, icon=icon, level=level, info_match=info_match)
+    win_loss_percentage = session.get('win_loss_percentage', {})
+    return render_template('result.html', game_name=game_name, tag_line=tag_line, champions=champions, icon=icon, level=level, info_match=info_match, win_loss_percentage=win_loss_percentage)
 
 
 if __name__ == '__main__':

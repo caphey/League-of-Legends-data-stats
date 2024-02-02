@@ -69,6 +69,7 @@
                 <div class="stat">
                   <p>Assistances : <span>{{ info[4] }}</span></p>
                   <p>Or gagnés : <span>{{ info[6] }}</span></p>
+                  <p>Type : <span>{{ info[11] }}</span></p>
                 </div>
                 <div class="stat">
                   <p>Total dégats : <span>{{ info[7] }}</span></p>
@@ -86,17 +87,66 @@
         </div>
 
         <div class="flex-column">
-          <div class="performance-curve title">Autres données</div>
-          <div class="performance-curve"></div>
-        </div>
-      </div>
-      <div class="advice-section">
-        <h2>Conseils pour les prochaines games</h2>
-        <p>
-          Qu'est-ce que tu dois faire pour prendre des LP sur tes prochaines
-          games?
-        </p>
-      </div>
-    </div>
+          <div class="performance-curve title">
+            Stats du dernier champion joué
+          </div>
+          <div class="performance-curve">
+          </div>
+
+          <div class="performance-curve title">
+            Part des victoire/défaite des 10 derniers matchs
+          </div>
+                <div class="performance-curve">
+                  <canvas id="win-loss-chart"></canvas>
+                </div>
+                <div class="performance-curve title">
+                  Nombre de CS/min des 10 derniers matchs
+                </div>
+                <div class="performance-curve">
+                  </div>
+                </div>
+                
+              </div>
+              <div class="advice-section">
+                <h2>Conseils pour les prochaines games</h2>
+                <p>
+                  Qu'est-ce que tu dois faire pour prendre des LP sur tes prochaines
+                  games?
+                </p>
+              </div>
+            </div>
+            
+          </div>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            const win_loss_chart = document.getElementById('win-loss-chart').getContext('2d');
+            const win_loss = {
+            labels: ['Victoire', 'Défaite'],
+            datasets: [
+              {
+                      data: {{ win_loss_percentage | safe }},
+                    }
+                  ]
+                };
+          const config = {
+            type: 'doughnut',
+            data: win_loss,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                title: {
+                  display: true,
+                  text: 'Chart.js Doughnut Chart'
+                }
+              }
+            },
+          };
+          new Chart(win_loss_chart, config);
+        </script>
+      </body>
+    </html>
   </body>
 </html>
