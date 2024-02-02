@@ -223,7 +223,8 @@ def plot_win_loss_percentage(win_loss_percentage):
     if champions:
         fig, ax = plt.subplots()
 
-        ax.pie(wins, losses, labels=champions, autopct='%1.1f%%', startangle=90)
+        ax.pie(wins, losses, labels=champions,
+               autopct='%1.1f%%', startangle=90)
         # Equal aspect ratio ensures that pie is drawn as a circle.
         ax.axis('equal')
 
@@ -232,6 +233,6 @@ def plot_win_loss_percentage(win_loss_percentage):
         plt.show()
 
 
-print(plot_win_loss_percentage(get_win_loss_percentage(get_puuid("Cig", "ImYou"))))
+# print(plot_win_loss_percentage(get_win_loss_percentage(get_puuid("Cig", "ImYou"))))
 
 # print(get_win_loss_percentage(get_puuid("27o", "euw27")))
