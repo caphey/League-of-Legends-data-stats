@@ -16,6 +16,13 @@ body, html {
     margin-bottom: 20px;
 }
 
+.player{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
 .avatar {
     background-color: transparent;
     border-radius: 50%;

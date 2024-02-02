@@ -159,57 +159,32 @@ def get_icon_champion(champion_name):
 
 
 def get_win_loss_percentage(puuid):
-    champions_player_url = "https://{}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/{}/top?count=5&api_key={}".format(
-        platform_api[2], puuid, api_key)
-    response = requests.get(champions_player_url)
+    url = "https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?startTime={}&endTime={}&count=20&api_key={}".format(
+        region_api[2], puuid, ten_days_ago_timestamp, today_timestamp, api_key)
+    response = requests.get(url)
     if response.status_code == 200:
-        champions_player = response.json()
-        data_champions_url = "https://ddragon.leagueoflegends.com/cdn/14.2.1/data/en_US/champion.json"
-        response = requests.get(data_champions_url)
-        if response.status_code == 200:
-            data_champions = response.json()
-            top_champions = []
-            win_loss_percentage = {}
-            # On parcourt la liste des champions du joueur pour trouver le nom du champion correspondant à l'id
-            for i in range(len(champions_player)):
-                # On parcourt la liste de tous les champions pour trouver le nom du champion correspondant à l'id
-                for key, value in data_champions["data"].items():
-                    # Si l'id du champion du joueur correspond à l'id du champion de la liste de tous les champions
-                    if champions_player[i]["championId"] == int(value["key"]):
-                        # On ajoute le nom du champion à la liste des champions les plus joués
-                        top_champions.append(value["name"])
-                        win_loss_percentage[value["name"]] = {
-                            "wins": 0, "losses": 0}
-            # On peut seulement récupérer les données des champions concernant les 20 derniers matchs car l'API permet seulement 100 requêtes toutes les 2 minutes
-            matchs_url = "https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?startTime={}&endTime={}&api_key={}".format(
-                region_api[2], puuid, startTime, today_timestamp, api_key)
-            response = requests.get(matchs_url)
+        list_match = response.json()
+        win_loss = {"wins": 0, "losses": 0}
+        for match_id in list_match:
+            url_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(
+                region_api[2], match_id, api_key)
+            response = requests.get(url_match)
             if response.status_code == 200:
-                list_match = response.json()
-                for match_id in list_match:
-                    url_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(
-                        region_api[2], match_id, api_key)
-                    response = requests.get(url_match)
-                    if response.status_code == 200:
-                        match_info = response.json()
-                        part_index = match_info["metadata"]["participants"].index(
-                            puuid)
-                        champion_name = match_info["info"]["participants"][part_index]["championName"]
-                        if champion_name in top_champions:
-                            if match_info["info"]["participants"][part_index]["win"]:
-                                win_loss_percentage[champion_name]["wins"] += 1
-                            else:
-                                win_loss_percentage[champion_name]["losses"] += 1
+                match_info = response.json()
+                part_index = match_info["metadata"]["participants"].index(
+                    puuid)
+                if match_info["info"]["participants"][part_index]["win"]:
+                    win_loss["wins"] += 1
+                else:
+                    win_loss["losses"] += 1
             else:
                 return None
-            return win_loss_percentage
-        else:
-            return None
+        return win_loss
     else:
         return None
 
 
-def plot_win_loss_percentage(win_loss_percentage):
+# def plot_win_loss_percentage(win_loss_percentage):
     champions = []
     wins = []
     losses = []
@@ -234,5 +209,4 @@ def plot_win_loss_percentage(win_loss_percentage):
 
 
 # print(plot_win_loss_percentage(get_win_loss_percentage(get_puuid("Cig", "ImYou"))))
-
-# print(get_win_loss_percentage(get_puuid("27o", "euw27")))
+print(get_win_loss_percentage(get_puuid("27o", "euw27")))
