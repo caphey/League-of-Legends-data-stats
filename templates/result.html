@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='result.css') }}"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="content-wrapper">
@@ -88,21 +89,23 @@
 
         <div class="flex-column">
           <div class="performance-curve title">
-            Stats du dernier champion joué
+            Statistiques des 3 derniers matchs
           </div>
-          <div class="performance-curve">
+          <div class="performance-curve graph">
+            <canvas id="stats-three-match-chart"></canvas>
           </div>
 
           <div class="performance-curve title">
-            Part des victoire/défaite des 10 derniers matchs
+            Part des victoire/défaite des 20 derniers matchs
           </div>
-                <div class="performance-curve">
+                <div class="performance-curve graph">
                   <canvas id="win-loss-chart"></canvas>
                 </div>
                 <div class="performance-curve title">
-                  Nombre de CS/min des 10 derniers matchs
+                  Nombre de CS/min des 20 derniers matchs
                 </div>
-                <div class="performance-curve">
+                <div class="performance-curve graph">
+                  <canvas id="cs-per-min-chart"></canvas>
                   </div>
                 </div>
                 
@@ -117,35 +120,91 @@
             </div>
             
           </div>
-          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
           <script>
-            const win_loss_chart = document.getElementById('win-loss-chart').getContext('2d');
-            const win_loss = {
-            labels: ['Victoire', 'Défaite'],
-            datasets: [
-              {
-                      data: {{ win_loss_percentage | safe }},
-                    }
+            // Pie chart
+            const winLossChart = document.getElementById('win-loss-chart').getContext('2d');
+
+            new Chart(winLossChart, {
+              type: 'doughnut',
+              data: {
+                labels: ['Victoire', 'Défaite'],
+                datasets: [{
+                  label: 'Nombre de victoires et défaites',
+                  data: [{{ win_loss_percentage["wins"]}}, {{ win_loss_percentage["losses"]}}],
+                  backgroundColor: ['rgba(63, 175, 219, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                }   
                   ]
-                };
-          const config = {
-            type: 'doughnut',
-            data: win_loss,
-            options: {
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top',
+                
                 },
-                title: {
+                  options: {
+                    responsive: true,
+                    legend: {
+                      position: 'right',
+                      labels: {
+                        fontColor: 'black',
+                        fontSize: 16
+                      },
+                  },
                   display: true,
-                  text: 'Chart.js Doughnut Chart'
                 }
+            }
+              );
+
+            // Area chart
+            const statsLastMatchChart = document.getElementById('stats-three-match-chart').getContext('2d');
+
+            new Chart(statsLastMatchChart, {
+              type: 'radar',
+              data: {
+                labels: ['Tués', 'Morts', 'Assistances', 'Level', 'Or gagnés (k)', 'Total dégats (k)', 'KDA'],
+                datasets: [{
+                  label: 'Dernier match joué',
+                  data: [{{ stats_three_match[0]["kills"] }}, {{ stats_three_match[0]["deaths"] }}, {{ stats_three_match[0]["assists"] }}, {{ stats_three_match[0]["champ_level"] }}, {{ stats_three_match[0]["gold_earned"] }}, {{ stats_three_match[0]["total_damage_dealt_to_champions"] }}, {{ stats_three_match[0]["kda"] }}],
+                  backgroundColor: 'rgba(63, 175, 219, 0.5)',
+                  borderColor: 'rgba(63, 175, 219, 1)',
+                },
+                {
+                  label: 'Match - 2',
+                  data: [{{ stats_three_match[1]["kills"] }}, {{ stats_three_match[1]["deaths"] }}, {{ stats_three_match[1]["assists"] }}, {{ stats_three_match[1]["champ_level"] }}, {{ stats_three_match[1]["gold_earned"] }}, {{ stats_three_match[1]["total_damage_dealt_to_champions"] }}, {{ stats_three_match[1]["kda"] }}],
+                  backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                  borderColor: 'rgba(255, 99, 132, 1)'
+                },
+                {
+                  label: 'Match - 3',
+                  data: [{{ stats_three_match[2]["kills"] }}, {{ stats_three_match[2]["deaths"] }}, {{ stats_three_match[2]["assists"] }}, {{ stats_three_match[2]["champ_level"] }}, {{ stats_three_match[2]["gold_earned"] }}, {{ stats_three_match[2]["total_damage_dealt_to_champions"] }}, {{ stats_three_match[2]["kda"] }}],
+                  backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                  borderColor: 'rgba(75, 192, 192, 1)'
+                }
+              
+              ]
               }
-            },
-          };
-          new Chart(win_loss_chart, config);
-        </script>
+            });
+
+            // Line chart
+            const csPerMinChart = document.getElementById('cs-per-min-chart').getContext('2d');
+
+            new Chart(csPerMinChart, {
+              type: 'line',
+              data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
+                datasets: [
+                  {
+                    label: 'CS/min',
+                    data: [{{ cs_per_min["cs_per_min"][0] }}, {{ cs_per_min["cs_per_min"][1] }}, {{ cs_per_min["cs_per_min"][2] }}, {{ cs_per_min["cs_per_min"][3] }}, {{ cs_per_min["cs_per_min"][4] }}, {{ cs_per_min["cs_per_min"][5] }}, {{ cs_per_min["cs_per_min"][6] }}, {{ cs_per_min["cs_per_min"][7] }}, {{ cs_per_min["cs_per_min"][8] }}, {{ cs_per_min["cs_per_min"][9] }}, {{ cs_per_min["cs_per_min"][10] }}, {{ cs_per_min["cs_per_min"][11] }}, {{ cs_per_min["cs_per_min"][12] }}, {{ cs_per_min["cs_per_min"][13] }}, {{ cs_per_min["cs_per_min"][14] }}, {{ cs_per_min["cs_per_min"][15] }}, {{ cs_per_min["cs_per_min"][16] }}, {{ cs_per_min["cs_per_min"][17] }}, {{ cs_per_min["cs_per_min"][18] }}, {{ cs_per_min["cs_per_min"][19] }}],
+                    backgroundColor: 'rgba(63, 175, 219, 0.5)',
+                    borderColor: 'rgba(63, 175, 219, 1)',
+                  },
+                  {
+                    label: 'Moyenne CS/min',
+                    data: Array(20).fill({{ cs_per_min["mean_cs"] }}),
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)'
+                  }
+                ]
+              }
+            });
+
+          </script>
       </body>
     </html>
   </body>

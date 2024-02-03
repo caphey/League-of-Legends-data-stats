@@ -21,6 +21,8 @@ def submit():
     level = riot.get_level_player(puuid)
     info_match = riot.get_info_match_by_puuid(puuid)
     win_loss_percentage = riot.get_win_loss_percentage(puuid)
+    stats_three_match = riot.get_stats_last_three_match(puuid)
+    cs_per_min = riot.get_cs_per_min(puuid)
 
     session['game_name'] = game_name
     session['tag_line'] = tag_line
@@ -29,6 +31,8 @@ def submit():
     session['level'] = level
     session['info_match'] = info_match
     session['win_loss_percentage'] = win_loss_percentage
+    session['stats_three_match'] = stats_three_match
+    session['cs_per_min'] = cs_per_min
     return redirect(url_for('result'))
 
 
@@ -41,7 +45,9 @@ def result():
     level = session.get('level', '')
     info_match = session.get('info_match', {})
     win_loss_percentage = session.get('win_loss_percentage', {})
-    return render_template('result.html', game_name=game_name, tag_line=tag_line, champions=champions, icon=icon, level=level, info_match=info_match, win_loss_percentage=win_loss_percentage)
+    stats_three_match = session.get('stats_three_match', {})
+    cs_per_min = session.get('cs_per_min', {})
+    return render_template('result.html', game_name=game_name, tag_line=tag_line, champions=champions, icon=icon, level=level, info_match=info_match, win_loss_percentage=win_loss_percentage, stats_three_match=stats_three_match, cs_per_min=cs_per_min)
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ import time
 from datetime import datetime, timedelta
 
 # API key provenant de la plateforme Riot Games
-api_key = "RGAPI-d62e5423-5dae-40b7-a432-ae4cb17492dd"
+api_key = "RGAPI-f6a80daf-f204-488f-b230-627a063133d0"
 
 platform_api = ["BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2",
                 "NA1", "OC1", "TR1", "RU", "PH2", "SG2", "TH2", "TW2", "VN2"]
@@ -52,6 +52,7 @@ def get_info_match_by_puuid(puuid):
         list_match = response.json()
         match_info_list = []
         all_matches_info = []
+        list_cs_per_min = []
         for match_id in list_match:
             url_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(
                 region_api[2], match_id, api_key)
@@ -61,9 +62,6 @@ def get_info_match_by_puuid(puuid):
                 part_index = match_info["metadata"]["participants"].index(
                     puuid)
 
-                champion_name = match_info["info"]["participants"][part_index]["championName"]
-                url_icon = "https://ddragon.leagueoflegends.com/cdn/14.2.1/img/champion/{}.png".format(
-                    champion_name)
                 did_win = match_info["info"]["participants"][part_index]["win"]
                 if did_win:
                     did_win = "Victoire"
@@ -71,21 +69,28 @@ def get_info_match_by_puuid(puuid):
                     did_win = "Défaite"
                 date_match = datetime.fromtimestamp(
                     match_info["info"]["gameCreation"] / 1000).strftime("%d/%m/%Y")
-                kills = match_info["info"]["participants"][part_index]["kills"]
                 type_match = match_info["info"]["gameMode"]
+                kills = match_info["info"]["participants"][part_index]["kills"]
                 deaths = match_info["info"]["participants"][part_index]["deaths"]
                 assists = match_info["info"]["participants"][part_index]["assists"]
                 champ_level = match_info["info"]["participants"][part_index]["champLevel"]
                 gold_earned = match_info["info"]["participants"][part_index]["goldEarned"]
                 total_damage_dealt_to_champions = match_info["info"][
                     "participants"][part_index]["totalDamageDealtToChampions"]
-                champions = match_info["info"]["participants"][part_index]["championName"]
+                champions_name = match_info["info"]["participants"][part_index]["championName"]
+                url_icon = "https://ddragon.leagueoflegends.com/cdn/14.2.1/img/champion/{}.png".format(
+                    champions_name)
+                total_minions_killed = match_info["info"]["participants"][part_index]["totalMinionsKilled"]
+                duree = match_info["info"]["gameDuration"]
+                cs_per_min = round(total_minions_killed / (duree / 60), 2)
+                list_cs_per_min.append(cs_per_min)
                 if deaths == 0:
                     kda = (kills + assists)
                 else:
                     kda = (kills + assists) / deaths
+
                 match_info_list = [url_icon, did_win, kills, deaths, assists, champ_level,
-                                   gold_earned, total_damage_dealt_to_champions, champions, round(kda, 2), date_match, type_match]
+                                   gold_earned, total_damage_dealt_to_champions, champions_name, round(kda, 2), date_match, type_match]
                 all_matches_info.append(match_info_list)
             else:
                 return None
@@ -185,20 +190,91 @@ def get_win_loss_percentage(puuid):
         return None
 
 
-# def plot_win_loss_percentage(win_loss):
-#     labels = 'Victoires', 'Défaites'
-#     # sizes sert à définir la taille des parts du camembert
-#     sizes = [win_loss["wins"], win_loss["losses"]]
-#     colors = ['#264653', 'white']
-#     # explode sert à séparer les parts du camembert pour mettre en avant une part du camembert
-#     explode = (0.1, 0)
-#     plt.pie(sizes, explode=explode, labels=labels, colors=colors,
-#             # startangle sert à définir l'angle de départ du camembert, autopct sert à afficher le pourcentage
-#             autopct='%1.1f%%', shadow=True, startangle=140)
-#     # equal permet d'avoir un camembert parfaitement circulaire
-#     plt.axis('equal')
-#     plt.savefig('static/img/graph_win_loss.png', transparent=True)
-#     return 'static/img/graph_win_loss.png'
+def get_stats_last_three_match(puuid):
+    # puuid : identifiant unique du joueur
+    url = "https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?startTime={}&endTime={}&api_key={}".format(
+        region_api[2], puuid, ten_days_ago_timestamp, today_timestamp, api_key)
+    response = requests.get(url)
+    if response.status_code == 200:
+        list_match = response.json()
+        all_matches_info = []
+        for match_id in list_match[:3]:
+            url_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(
+                region_api[2], match_id, api_key)
+            response = requests.get(url_match)
+            if response.status_code == 200:
+                match_info = response.json()
+                part_index = match_info["metadata"]["participants"].index(
+                    puuid)
+
+                kills = match_info["info"]["participants"][part_index]["kills"]
+                deaths = match_info["info"]["participants"][part_index]["deaths"]
+                assists = match_info["info"]["participants"][part_index]["assists"]
+                champ_level = match_info["info"]["participants"][part_index]["champLevel"]
+                gold_earned = round(
+                    match_info["info"]["participants"][part_index]["goldEarned"] / 1000, 2)
+                total_damage_dealt_to_champions = round(match_info["info"][
+                    "participants"][part_index]["totalDamageDealtToChampions"] / 1000, 2)
+                champions_name = match_info["info"]["participants"][part_index]["championName"]
+                if deaths == 0:
+                    kda = (kills + assists)
+                else:
+                    kda = (kills + assists) / deaths
+
+                match_info_dict = {
+                    "champion_name": champions_name,
+                    "kills": kills,
+                    "deaths": deaths,
+                    "assists": assists,
+                    "champ_level": champ_level,
+                    "gold_earned": gold_earned,
+                    "total_damage_dealt_to_champions": total_damage_dealt_to_champions,
+                    "kda": round(kda, 2)
+                }
+                all_matches_info.append(match_info_dict)
+            else:
+                return None
+        # all_matches_info = all_matches_info[0]
+        return all_matches_info
+    else:
+        return None
+
+
+def get_cs_per_min(puuid):
+    # puuid : identifiant unique du joueur
+    url = "https://{}.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?startTime={}&endTime={}&api_key={}".format(
+        region_api[2], puuid, ten_days_ago_timestamp, today_timestamp, api_key)
+    response = requests.get(url)
+    if response.status_code == 200:
+        list_match = response.json()
+        list_cs_per_min = []
+        for match_id in list_match[:21]:
+            url_match = "https://{}.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(
+                region_api[2], match_id, api_key)
+            response = requests.get(url_match)
+            if response.status_code == 200:
+                match_info = response.json()
+                part_index = match_info["metadata"]["participants"].index(
+                    puuid)
+
+                total_minions_killed = match_info["info"]["participants"][part_index]["totalMinionsKilled"]
+                duree = match_info["info"]["gameDuration"]
+                cs_per_min = round(total_minions_killed / (duree / 60), 2)
+                list_cs_per_min.append(cs_per_min)
+            else:
+                return None
+        mean_cs_per_min = round(
+            sum(list_cs_per_min) / len(list_cs_per_min), 2)
+        dict_cs_per_min = {"cs_per_min": list_cs_per_min,
+                           "mean_cs": mean_cs_per_min}
+
+        return dict_cs_per_min
+    else:
+        return None
+
 
 # print(plot_win_loss_percentage(get_win_loss_percentage(get_puuid("Cig", "ImYou"))))
 # print(get_win_loss_percentage(get_puuid("Cig", "ImYou")))
+# print(get_stats_last_three_match(get_puuid("Cig", "ImYou")))
+# print(get_info_match_by_puuid(get_puuid("Cig", "ImYou")))
+# print(get_cs_per_min(get_puuid("Cig", "ImYou")))
