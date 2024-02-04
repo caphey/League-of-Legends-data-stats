@@ -14,29 +14,33 @@
       <div class="parallax" data-speed="3"></div>
     </div>
 
-    <form
-      action="{{ url_for('submit') }}"
-      method="post"
-      enctype="multipart/form-data"
-    >
-      <div id="inputDiv">
-        <input
-          type="text"
-          id="summonerNameInput"
-          name="game_name"
-          placeholder="Nom d'invocateur"
-        />
-        <input
-          type="text"
-          id="summonerNameInput"
-          name="tag_line"
-          placeholder="Tag"
-        />
-      </div>
-      <div id="btnSubmit">
-        <input type="submit" id="searchButton" value="Envoyer" />
-      </div>
-    </form>
+    <div class="main-content">
+      <img src="/static/img/BOOK_Logo_blanc.png" alt="Logo" />
+      <form
+        action="{{ url_for('submit') }}"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <div id="inputDiv">
+          <input
+            type="text"
+            id="summonerNameInput"
+            name="game_name"
+            placeholder="Nom d'invocateur"
+          />
+          <input
+            type="text"
+            id="summonerNameInput"
+            name="tag_line"
+            placeholder="Tag"
+          />
+        </div>
+        <div id="btnSubmit">
+          <input type="submit" id="searchButton" value="Envoyer" />
+        </div>
+      </form>
+    </div>
+    <div id="particles-js"></div>
     <script>
       document.addEventListener("mousemove", parallax); // Ecouteur d'événement sur la souris
       function parallax(e) {
@@ -73,6 +77,94 @@
           },
         },
       });
+    </script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+      particlesJS("particles-js", {
+        particles: {
+          number: {
+            value: 303,
+            density: { enable: true, value_area: 473.4885849793636 },
+          },
+          color: { value: "#ff41c7" },
+          shape: {
+            type: "circle",
+            stroke: { width: 0, color: "#000000" },
+            polygon: { nb_sides: 5 },
+            image: { src: "img/github.svg", width: 100, height: 100 },
+          },
+          opacity: {
+            value: 1,
+            random: true,
+            anim: { enable: true, speed: 1, opacity_min: 0, sync: false },
+          },
+          size: {
+            value: 4,
+            random: true,
+            anim: { enable: false, speed: 4, size_min: 0.3, sync: false },
+          },
+          line_linked: {
+            enable: false,
+            distance: 0,
+            color: "#ffffff",
+            opacity: 0.4,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 4.810236182596568,
+            direction: "top-right",
+            random: true,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+            attract: { enable: false, rotateX: 0, rotateY: 0 },
+          },
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "bubble" },
+            onclick: { enable: false, mode: "bubble" },
+            resize: true,
+          },
+          modes: {
+            grab: { distance: 400, line_linked: { opacity: 1 } },
+            bubble: {
+              distance: 146.16558937213767,
+              size: 0,
+              duration: 0.8932341572741748,
+              opacity: 0,
+              speed: 3,
+            },
+            repulse: { distance: 73.08279468606885, duration: 0.4 },
+            push: { particles_nb: 4 },
+            remove: { particles_nb: 2 },
+          },
+        },
+        retina_detect: true,
+      });
+      var count_particles, stats, update;
+      stats = new Stats();
+      stats.setMode(0);
+      stats.domElement.style.position = "absolute";
+      stats.domElement.style.left = "0px";
+      stats.domElement.style.top = "0px";
+      document.body.appendChild(stats.domElement);
+      count_particles = document.querySelector(".js-count-particles");
+      update = function () {
+        stats.begin();
+        stats.end();
+        if (
+          window.pJSDom[0].pJS.particles &&
+          window.pJSDom[0].pJS.particles.array
+        ) {
+          count_particles.innerText =
+            window.pJSDom[0].pJS.particles.array.length;
+        }
+        requestAnimationFrame(update);
+      };
+      requestAnimationFrame(update);
     </script>
   </body>
 </html>
