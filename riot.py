@@ -4,7 +4,7 @@ import time
 from datetime import datetime, timedelta
 
 # API key provenant de la plateforme Riot Games
-api_key = "RGAPI-f6a80daf-f204-488f-b230-627a063133d0"
+api_key = "RGAPI-133629c8-258a-46ec-b535-4de32fdf79be"
 
 platform_api = ["BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2",
                 "NA1", "OC1", "TR1", "RU", "PH2", "SG2", "TH2", "TW2", "VN2"]
