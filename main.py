@@ -76,20 +76,28 @@ def submit():
     # Récupére les nouvelles données de l'API
     new_user_data = get_user_data(game_name, tag_line)
 
-    if existing_user:
-        # Si l'utilisateur existe déjà, compare les nouvelles données avec les données existantes
-        if new_user_data == existing_user:
-            # Si les données sont les mêmes, utilise les données existantes
-            user_data = existing_user
-        else:
-            # Si les données sont différentes, utilise les nouvelles données et mettez à jour la base de données
-            user_data = new_user_data
-            user_data_for_update = user_data.copy()
-            user_data_for_update.pop('_id', None)
-            collection.find_one_and_update({'game_name': game_name, 'tag_line': tag_line}, {
-                '$set': user_data_for_update}, upsert=True, return_document=ReturnDocument.AFTER)
+    # Vérifie si les graphiques sont valides
+    win_loss_percentage = new_user_data.get('win_loss_percentage')
+    if win_loss_percentage is None and existing_user is not None:
+        win_loss_percentage = existing_user.get('win_loss_percentage', {})
+        new_user_data['win_loss_percentage'] = win_loss_percentage
+
+    stats_three_match = new_user_data.get('stats_three_match')
+    if stats_three_match is None and existing_user is not None:
+        stats_three_match = existing_user.get('stats_three_match', {})
+        new_user_data['stats_three_match'] = stats_three_match
+
+    cs_per_min = new_user_data.get('cs_per_min')
+    if cs_per_min is None and existing_user is not None:
+        cs_per_min = existing_user.get('cs_per_min', {})
+        new_user_data['cs_per_min'] = cs_per_min
+
+    # Comparer les nouvelles données avec les données existantes
+    if existing_user and new_user_data == existing_user:
+        # Si les données sont les mêmes, utilise les données existantes
+        user_data = existing_user
     else:
-        # Si l'utilisateur n'existe pas, utilise les nouvelles données et enregistrez-les dans la base de données
+        # Si les données sont différentes, utilise les nouvelles données et mettez à jour la base de données        user_data = new_user_data
         user_data = new_user_data
         user_data_for_update = user_data.copy()
         user_data_for_update.pop('_id', None)
@@ -99,6 +107,7 @@ def submit():
     # Stocke les données dans la session
     session['user_data'] = user_data
     return redirect(url_for('result'))
+
 
 @app.route('/result')
 def result():
@@ -115,6 +124,7 @@ def result():
     cs_per_min = user_data.get('cs_per_min', {})
 
     return render_template('result.html', game_name=game_name, tag_line=tag_line, puuid=puuid, champions=champions, icon=icon, level=level, info_match=info_match, win_loss_percentage=win_loss_percentage, stats_three_match=stats_three_match, cs_per_min=cs_per_min)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
