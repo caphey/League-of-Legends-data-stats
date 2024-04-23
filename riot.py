@@ -1,26 +1,19 @@
 import requests
-import matplotlib.pyplot as plt
 import time
 from datetime import datetime, timedelta
 
 # API key provenant de la plateforme Riot Games
-api_key = "RGAPI-abc11a33-eb6f-433e-9837-f29923a1ba7e"
+api_key = "RGAPI-beeb6a08-d5f6-4bfb-9ce6-d3e3c1f1c1a6"
 
 platform_api = ["BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2",
                 "NA1", "OC1", "TR1", "RU", "PH2", "SG2", "TH2", "TW2", "VN2"]
 region_api = ["americas", "asia", "europe", "sea"]
-# startTime = "1706221916"
-# endTime = "1706741999"
 
-# date_created = "01/01/2009"
-# date_format = "%d/%m/%Y"
-# date_created_timestamp = round(datetime.strptime(
-#     date_created, date_format).timestamp())
-
+# Timestamp de la date de début de la recherche des matchs (18 juin 2021)
 startTime = "1623974400"
-
+# Timestamp de la date de fin de la recherche des matchs (date actuelle)
 today_timestamp = round(time.time())
-
+# Timestamp de la date d'il y a 10 jours
 today = datetime.now()
 ten_days_ago = today - timedelta(days=10)
 ten_days_ago_timestamp = round(ten_days_ago.timestamp())
@@ -234,7 +227,6 @@ def get_stats_last_three_match(puuid):
                 all_matches_info.append(match_info_dict)
             else:
                 return None
-        # all_matches_info = all_matches_info[0]
         return all_matches_info
     else:
         return None
@@ -271,10 +263,3 @@ def get_cs_per_min(puuid):
         return dict_cs_per_min
     else:
         return None
-
-
-# print(plot_win_loss_percentage(get_win_loss_percentage(get_puuid("Cig", "ImYou"))))
-# print(get_win_loss_percentage(get_puuid("Cig", "ImYou")))
-# print(get_stats_last_three_match(get_puuid("Cig", "ImYou")))
-# print(get_info_match_by_puuid(get_puuid("Cig", "ImYou")))
-# print(get_cs_per_min(get_puuid("Cig", "ImYou")))

@@ -3,6 +3,7 @@
 Ce projet est une application web qui utilise l'API de Riot Games pour récupérer et afficher des statistiques sur les joueurs de League of Legends.
 
 ![Capture d'écran de l'application](/static/img/background.jpeg)
+![Capture d'écran de l'application](/static/img/screenshot.jpeg)
 
 ## Structure du projet
 
@@ -18,7 +19,7 @@ Le projet est structuré comme suit :
 1. Assurez-vous d'avoir installé Python et Flask.
 2. Exécutez le serveur Flask avec la commande suivante :
 
-```sh
+```bash
 python main.py
 ```
 
