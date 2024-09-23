@@ -2,9 +2,6 @@ import requests
 import time
 from datetime import datetime, timedelta
 
-# API key provenant de la plateforme Riot Games
-api_key = "RGAPI-beeb6a08-d5f6-4bfb-9ce6-d3e3c1f1c1a6"
-
 platform_api = ["BR1", "EUN1", "EUW1", "JP1", "KR", "LA1", "LA2",
                 "NA1", "OC1", "TR1", "RU", "PH2", "SG2", "TH2", "TW2", "VN2"]
 region_api = ["americas", "asia", "europe", "sea"]

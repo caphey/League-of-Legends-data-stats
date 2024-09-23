@@ -6,9 +6,8 @@
     <title>Interface de Profil de Joueur</title>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='result.css') }}"
+      href="{{ url_for('static', filename='css/style.css') }}"
     />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="content-wrapper">
@@ -16,18 +15,18 @@
         <div class="avatar">
           <img
             id="avatar_image"
-            src="https://ddragon.leagueoflegends.com/cdn/14.2.1/img/profileicon/{{icon}}"
-            alt=""
+            src="https://ddragon.leagueoflegends.com/cdn/14.2.1/img/profileicon/{{ icon }}"
+            alt="Avatar"
           />
         </div>
         <div class="player">
-          <h1 class="summoner-name">{{ game_name }}</h1>
-          <h1 class="summoner-name">#{{ tag_line }}</h1>
+          <h1 id="game_name" class="summoner-name">{{ game_name }}</h1>
+          <h1 id="tag_line" class="summoner-name">#{{ tag_line }}</h1>
         </div>
       </div>
 
       <div class="champions-wrapper">
-        {% for champion in champions %}
+        {% for champion in top_champions %}
         <div class="champion">
           <div class="circle-image">
             <img
@@ -53,34 +52,34 @@
                 <div class="circle-image">
                   <img
                     id="champion-image"
-                    src="{{ info[0] }}"
-                    alt="{{ info[0] }}"
+                    src="{{ info.url_icon }}"
+                    alt="{{ info.champion_name }}"
                   />
                 </div>
-                <h3 class="champion-name">{{ info[8] }}</h3>
-                <h3 class="date-match">{{ info[10] }}</h3>
+                <h3 class="champion-name">{{ info.champion_name }}</h3>
+                <h3 class="date-match">{{ info.date }}</h3>
               </div>
               <div class="line"></div>
               <div class="stats">
                 <div class="stat">
-                  <p>Tués : <span>{{ info[2] }}</span></p>
-                  <p>Morts : <span>{{ info[3] }}</span></p>
-                  <p>Level : <span>{{ info[5] }}</span></p>
+                  <p>Tués : {{ info.kills }}</p>
+                  <p>Morts : {{ info.deaths }}</p>
+                  <p>Level : {{ info.champ_level }}</p>
                 </div>
                 <div class="stat">
-                  <p>Assistances : <span>{{ info[4] }}</span></p>
-                  <p>Or gagnés : <span>{{ info[6] }}</span></p>
-                  <p>Type : <span>{{ info[11] }}</span></p>
+                  <p>Assistances : {{ info.assists }}</p>
+                  <p>Or gagnés : {{ info.gold_earned }}</p>
+                  <p>Type : {{ info.type }}</p>
                 </div>
                 <div class="stat">
-                  <p>Total dégats : <span>{{ info[7] }}</span></p>
-                  <p>KDA : <span>{{ info[9] }}</span></p>
+                  <p>Total dégâts : {{ info.total_damage }}</p>
+                  <p>KDA : {{ info.kda }}</p>
                 </div>
               </div>
               <div
-                class="did-win {% if info[1] == 'Défaite' %}defaite{% else %}victoire{% endif %}"
+                class="did-win {% if info.result == 'Défaite' %}defaite{% else %}victoire{% endif %}"
               >
-                OMG LA {{ info[1] }}
+                OMG LA {{ info.result }}
               </div>
             </div>
           </div>
@@ -92,120 +91,42 @@
             Statistiques des 3 derniers matchs
           </div>
           <div class="performance-curve graph">
-            <canvas id="stats-three-match-chart"></canvas>
+            <canvas id="lastThreeMatchesChart"></canvas>
           </div>
 
           <div class="performance-curve title">
-            Part des victoire/défaite des 20 derniers matchs
+            Part des victoires/défaites des 20 derniers matchs
           </div>
-                <div class="performance-curve graph">
-                  <canvas id="win-loss-chart"></canvas>
-                </div>
-                <div class="performance-curve title">
-                  Nombre de CS/min des 20 derniers matchs
-                </div>
-                <div class="performance-curve graph">
-                  <canvas id="cs-per-min-chart"></canvas>
-                  </div>
-                </div>
-                
-              </div>
-              <div class="advice-section">
-                <h2>Conseils pour les prochaines games</h2>
-                <p>
-                  Qu'est-ce que tu dois faire pour prendre des LP sur tes prochaines
-                  games?
-                </p>
-              </div>
-            </div>
-            
+          <div class="performance-curve graph">
+            <canvas id="winLossChart"></canvas>
           </div>
-          <script>
-            // Pie chart
-            const winLossChart = document.getElementById('win-loss-chart').getContext('2d');
 
-            new Chart(winLossChart, {
-              type: 'doughnut',
-              data: {
-                labels: ['Victoire', 'Défaite'],
-                datasets: [{
-                  label: 'Nombre de victoires et défaites',
-                  data: [{{ win_loss_percentage["wins"]}}, {{ win_loss_percentage["losses"]}}],
-                  backgroundColor: ['rgba(63, 175, 219, 0.5)', 'rgba(255, 99, 132, 0.5)'],
-                }   
-                  ]
-                
-                },
-                  options: {
-                    responsive: true,
-                    legend: {
-                      position: 'right',
-                      labels: {
-                        fontColor: 'black',
-                        fontSize: 16
-                      },
-                  },
-                  display: true,
-                }
-            }
-              );
+          <div class="performance-curve title">
+            Nombre de CS/min des 20 derniers matchs
+          </div>
+          <div class="performance-curve graph">
+            <canvas id="csPerMinChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            // Area chart
-            const statsLastMatchChart = document.getElementById('stats-three-match-chart').getContext('2d');
-
-            new Chart(statsLastMatchChart, {
-              type: 'radar',
-              data: {
-                labels: ['Tués', 'Morts', 'Assistances', 'Level', 'Or gagnés (k)', 'Total dégats (k)', 'KDA'],
-                datasets: [{
-                  label: 'Dernier match joué',
-                  data: [{{ stats_three_match[0]["kills"] }}, {{ stats_three_match[0]["deaths"] }}, {{ stats_three_match[0]["assists"] }}, {{ stats_three_match[0]["champ_level"] }}, {{ stats_three_match[0]["gold_earned"] }}, {{ stats_three_match[0]["total_damage_dealt_to_champions"] }}, {{ stats_three_match[0]["kda"] }}],
-                  backgroundColor: 'rgba(63, 175, 219, 0.5)',
-                  borderColor: 'rgba(63, 175, 219, 1)',
-                },
-                {
-                  label: 'Match - 2',
-                  data: [{{ stats_three_match[1]["kills"] }}, {{ stats_three_match[1]["deaths"] }}, {{ stats_three_match[1]["assists"] }}, {{ stats_three_match[1]["champ_level"] }}, {{ stats_three_match[1]["gold_earned"] }}, {{ stats_three_match[1]["total_damage_dealt_to_champions"] }}, {{ stats_three_match[1]["kda"] }}],
-                  backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                  borderColor: 'rgba(255, 99, 132, 1)'
-                },
-                {
-                  label: 'Match - 3',
-                  data: [{{ stats_three_match[2]["kills"] }}, {{ stats_three_match[2]["deaths"] }}, {{ stats_three_match[2]["assists"] }}, {{ stats_three_match[2]["champ_level"] }}, {{ stats_three_match[2]["gold_earned"] }}, {{ stats_three_match[2]["total_damage_dealt_to_champions"] }}, {{ stats_three_match[2]["kda"] }}],
-                  backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                  borderColor: 'rgba(75, 192, 192, 1)'
-                }
-              
-              ]
-              }
-            });
-
-            // Line chart
-            const csPerMinChart = document.getElementById('cs-per-min-chart').getContext('2d');
-
-            new Chart(csPerMinChart, {
-              type: 'line',
-              data: {
-                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
-                datasets: [
-                  {
-                    label: 'CS/min',
-                    data: [{{ cs_per_min["cs_per_min"][0] }}, {{ cs_per_min["cs_per_min"][1] }}, {{ cs_per_min["cs_per_min"][2] }}, {{ cs_per_min["cs_per_min"][3] }}, {{ cs_per_min["cs_per_min"][4] }}, {{ cs_per_min["cs_per_min"][5] }}, {{ cs_per_min["cs_per_min"][6] }}, {{ cs_per_min["cs_per_min"][7] }}, {{ cs_per_min["cs_per_min"][8] }}, {{ cs_per_min["cs_per_min"][9] }}, {{ cs_per_min["cs_per_min"][10] }}, {{ cs_per_min["cs_per_min"][11] }}, {{ cs_per_min["cs_per_min"][12] }}, {{ cs_per_min["cs_per_min"][13] }}, {{ cs_per_min["cs_per_min"][14] }}, {{ cs_per_min["cs_per_min"][15] }}, {{ cs_per_min["cs_per_min"][16] }}, {{ cs_per_min["cs_per_min"][17] }}, {{ cs_per_min["cs_per_min"][18] }}, {{ cs_per_min["cs_per_min"][19] }}],
-                    backgroundColor: 'rgba(63, 175, 219, 0.5)',
-                    borderColor: 'rgba(63, 175, 219, 1)',
-                  },
-                  {
-                    label: 'Moyenne CS/min',
-                    data: Array(20).fill({{ cs_per_min["mean_cs"] }}),
-                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                    borderColor: 'rgba(255, 99, 132, 1)'
-                  }
-                ]
-              }
-            });
-
-          </script>
-      </body>
-    </html>
+    <script>
+      // Passage des données du backend au frontend
+      const stats_three_match_data = {{ stats_three_match | safe }};
+      const win_loss_data = {{ win_loss_percentage | safe }};
+      const cs_per_min_data = {{ cs_per_min | safe }};
+    </script>
+    <script id="stats_three_match_data" type="application/json">
+      {{ stats_three_match | tojson | safe }}
+    </script>
+    <script id="win_loss_data" type="application/json">
+      {{ win_loss_percentage | tojson | safe }}
+    </script>
+    <script id="cs_per_min_data" type="application/json">
+      {{ cs_per_min | tojson | safe }}
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
   </body>
 </html>

@@ -1,62 +1,11 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-import riot
-from pymongo import MongoClient, ReturnDocument
+from config import Config
+from services import riot
+from database import save_user_data, get_user_data
 
 app = Flask(__name__)
-app.secret_key = 'dasitathon'
-
-# Connexion à la base de données
-client = MongoClient('localhost', 27017)
-db = client['api-project']
-collection = db['riot']
-
-
-def save_user_data(game_name, tag_line, puuid, top_champions, icon, level, info_match, win_loss_percentage, stats_three_match, cs_per_min):
-    user_data = {
-        'game_name': game_name,
-        'tag_line': tag_line,
-        'puuid': puuid,
-        'top_champions': top_champions,
-        'icon': icon,
-        'level': level,
-        'info_match': info_match,
-        'win_loss_percentage': win_loss_percentage,
-        'stats_three_match': stats_three_match,
-        'cs_per_min': cs_per_min
-    }
-    user_data_for_update = user_data.copy()
-    user_data_for_update.pop('_id', None)
-    updated_user = collection.find_one_and_update({'game_name': game_name, 'tag_line': tag_line}, {
-        '$set': user_data_for_update}, upsert=True, return_document=ReturnDocument.AFTER)
-
-    return updated_user
-
-
-def get_user_data(game_name, tag_line):
-    # Récupére les données de l'utilisateur
-    puuid = riot.get_puuid(game_name, tag_line)
-    top_champions = riot.top_3_champions(puuid)
-    icon = riot.get_icon_player(puuid)
-    level = riot.get_level_player(puuid)
-    info_match = riot.get_info_match_by_puuid(puuid)
-    win_loss_percentage = riot.get_win_loss_percentage(puuid)
-    stats_three_match = riot.get_stats_last_three_match(puuid)
-    cs_per_min = riot.get_cs_per_min(puuid)
-
-    user_data = {
-        'game_name': game_name,
-        'tag_line': tag_line,
-        'puuid': puuid,
-        'top_champions': top_champions,
-        'icon': icon,
-        'level': level,
-        'info_match': info_match,
-        'win_loss_percentage': win_loss_percentage,
-        'stats_three_match': stats_three_match,
-        'cs_per_min': cs_per_min
-    }
-
-    return user_data
+app.config.from_object(Config)
+app.secret_key = Config.SECRET_KEY
 
 
 @app.route('/', methods=['GET'])
@@ -64,67 +13,34 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/submit', methods=['POST', 'GET'])
+@app.route('/submit', methods=['POST'])
 def submit():
     game_name = request.form.get('game_name')
     tag_line = request.form.get('tag_line')
 
-    # Check si le joueur existe déjà dans la base de données
-    existing_user = collection.find_one(
-        {'game_name': game_name, 'tag_line': tag_line})
+    # try:
+    existing_user = get_user_data(game_name, tag_line)
+    new_user_data = riot.get_user_data(game_name, tag_line)
 
-    # Récupére les nouvelles données de l'API
-    new_user_data = get_user_data(game_name, tag_line)
+    # if existing_user != new_user_data:
+    #     user_data = save_user_data(new_user_data)
+    # else:
+    #     user_data = existing_user
 
-    # Vérifie si les graphiques sont valides
-    win_loss_percentage = new_user_data.get('win_loss_percentage')
-    if win_loss_percentage is None and existing_user is not None:
-        win_loss_percentage = existing_user.get('win_loss_percentage', {})
-        new_user_data['win_loss_percentage'] = win_loss_percentage
-
-    stats_three_match = new_user_data.get('stats_three_match')
-    if stats_three_match is None and existing_user is not None:
-        stats_three_match = existing_user.get('stats_three_match', {})
-        new_user_data['stats_three_match'] = stats_three_match
-
-    cs_per_min = new_user_data.get('cs_per_min')
-    if cs_per_min is None and existing_user is not None:
-        cs_per_min = existing_user.get('cs_per_min', {})
-        new_user_data['cs_per_min'] = cs_per_min
-
-    # Comparer les nouvelles données avec les données existantes
-    if existing_user and new_user_data == existing_user:
-        # Si les données sont les mêmes, utilise les données existantes
-        user_data = existing_user
-    else:
-        # Si les données sont différentes, utilise les nouvelles données et mettez à jour la base de données        user_data = new_user_data
-        user_data = new_user_data
-        user_data_for_update = user_data.copy()
-        user_data_for_update.pop('_id', None)
-        collection.find_one_and_update({'game_name': game_name, 'tag_line': tag_line}, {
-            '$set': user_data_for_update}, upsert=True, return_document=ReturnDocument.AFTER)
-
-    # Stocke les données dans la session
-    session['user_data'] = user_data
+    session['user_data'] = new_user_data
     return redirect(url_for('result'))
+    # except Exception as e:
+    #     # Log l'erreur
+    #     return render_template('error.html', message="Une erreur s'est produite. Veuillez réessayer plus tard.")
 
 
 @app.route('/result')
 def result():
     user_data = session.get('user_data', {})
-    game_name = user_data.get('game_name', '')
-    tag_line = user_data.get('tag_line', '')
-    puuid = user_data.get('puuid', '')
-    champions = user_data.get('top_champions', [])
-    icon = user_data.get('icon', '')
-    level = user_data.get('level', '')
-    info_match = user_data.get('info_match', {})
-    win_loss_percentage = user_data.get('win_loss_percentage', {})
-    stats_three_match = user_data.get('stats_three_match', {})
-    cs_per_min = user_data.get('cs_per_min', {})
-
-    return render_template('result.html', game_name=game_name, tag_line=tag_line, puuid=puuid, champions=champions, icon=icon, level=level, info_match=info_match, win_loss_percentage=win_loss_percentage, stats_three_match=stats_three_match, cs_per_min=cs_per_min)
+    if not user_data:
+        return redirect(url_for('index'))
+    return render_template('result.html', **user_data)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=Config.DEBUG)
