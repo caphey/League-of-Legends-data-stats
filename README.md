@@ -1,6 +1,6 @@
 # League of Legends Data Stats
 
-Ce projet est une application web qui utilise l'API de Riot Games pour récupérer et afficher des statistiques sur les joueurs de League of Legends.
+Ce projet est une application web qui utilise l'API de Riot Games pour récupérer et afficher des statistiques détaillées sur les joueurs de League of Legends.
 
 ![Capture d'écran de l'application](/static/img/background.jpeg)
 ![Capture d'écran de l'application](/static/img/screenshot.jpeg)
@@ -9,10 +9,15 @@ Ce projet est une application web qui utilise l'API de Riot Games pour récupér
 
 Le projet est structuré comme suit :
 
-- `main.py` : Le point d'entrée de l'application. Il contient le code du serveur Flask et les routes.
-- `riot.py` : Ce fichier contient les fonctions qui interagissent avec l'API de Riot Games.
-- `static/` : Ce dossier contient les fichiers statiques tels que les images et les fichiers CSS.
-- `templates/` : Ce dossier contient les fichiers HTML qui sont rendus par le serveur Flask.
+- `main.py` : Point d'entrée de l'application. Contient le code du serveur Flask et les routes.
+- `riot.py` : Contient les fonctions qui interagissent avec l'API de Riot Games.
+- `config.py` : Gère la configuration de l'application et les variables d'environnement.
+- `static/` : Contient les fichiers statiques (images, CSS, JavaScript).
+
+- `css/` : Fichiers CSS (`index.css`, `style.css`).
+- `js/` : Fichiers JavaScript (`script.js` pour les graphiques).
+- `img/` : Images utilisées dans l'application.
+- `templates/` : Contient les fichiers HTML (`index.html`, `result.html`).
 
 ## Comment exécuter le projet
 
@@ -23,7 +28,31 @@ Le projet est structuré comme suit :
 python main.py
 ```
 
-Ouvrez votre navigateur et accédez à http://localhost:5000.
+## Installation
+
+1. Clonez le dépôt :
+```bash
+git clone https://github.com/caphey/league-of-legends-data-stats.git
+cd league-of-legends-data-stats
+```
+
+2. Créez un fichier `.env` à la racine du projet et ajoutez vos variables d'environnement :
+```bash
+SECRET_KEY=votre_clé_secrète
+RIOT_API_KEY=votre_clé_api_riot
+MONGODB_URI=votre_uri_mongodb
+FLASK_DEBUG=True  # ou False en production
+```
+
+## Comment exécuter le projet
+
+1. Assurez-vous d'avoir bien installé python et que la clé de l'API soit encore fonctionnelle
+2. Exécutez le serveur Flask :
+```bash
+python main.py
+```
+
+Ouvrez votre navigateur et accédez à `http://localhost:5000`.
 
 ## Fonctionnalités
 * Récupération des données du joueur à partir de son nom de jeu et de sa ligne de tag.
@@ -34,8 +63,10 @@ Ouvrez votre navigateur et accédez à http://localhost:5000.
 * Affichage du CS par minute du joueur.
 
 ## Technologies utilisées
-* Python
-* HTML/CSS
-* Chart.js
-* Flask
-* MongoDB / NoSQL
+- Backend : Python, Flask
+- Frontend : HTML, CSS, JavaScript
+- Visualisation de données : Chart.js
+- API : Riot Games API
+
+## Structure du projet
+![Capture d'écran de l'application](/static/img/structure.png)
