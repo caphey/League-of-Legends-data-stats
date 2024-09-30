@@ -3,7 +3,7 @@
 Ce projet est une application web qui utilise l'API de Riot Games pour récupérer et afficher des statistiques détaillées sur les joueurs de League of Legends.
 
 ![Capture d'écran de l'application](/static/img/background.jpeg)
-![Capture d'écran de l'application](/static/img/screensho.jpeg)
+![Capture d'écran de l'application](/static/img/screenshot.jpeg)
 
 ## Structure du projet
 
